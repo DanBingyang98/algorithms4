@@ -97,15 +97,15 @@ public static void sort(Comparable[] a) {
 **代码：**
 
 ```java
-    public static void sort(Comparable[] a) {
-        // 遍历数组
-        for (int i = 1; i < a.length; i++) {
-            // 将当前位置的元素插入到前面的有序数组中
-            for (int j = i; j > 0 && less(a[j], a[j - 1]); j--) {
-                exch(a, j, j - 1);
-            }
+public static void sort(Comparable[] a) {
+    // 遍历数组
+    for (int i = 1; i < a.length; i++) {
+        // 将当前位置的元素插入到前面的有序数组中
+        for (int j = i; j > 0 && less(a[j], a[j - 1]); j--) {
+            exch(a, j, j - 1);
         }
     }
+}
 ```
 
 **特点：**
