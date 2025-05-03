@@ -183,29 +183,29 @@ public static void sort(Comparable[] a) {
 
 ```java
 public static void sort(Comparable[] a) {
-        int N = a.length;
-        // 初始化间隔h
-        int h = 1;
-        // 计算间隔h，使得h小于N/3
-        while (h < N / 3) h = 3 * h + 1;
-        // 当间隔h大于等于1时，进行希尔排序
-        while (h >= 1) {
-            // 从间隔h开始，依次比较间隔h的元素
-            for (int i = h; i < N; i++) {
-                // 保存当前元素
-                Comparable temp = a[i];
-                // 从当前元素的前一个间隔h开始，依次比较元素
-                int j;
-                for (j = i - h; j >= 0 && less(temp, a[j]); j -= h)
-                    // 将当前元素前一个间隔h的元素后移
-                    a[j + h] = a[j];
-                // 将当前元素插入到正确的位置
-                a[j + h] = temp;
-            }
-            // 将间隔h缩小为原来的1/3
-            h /= 3;
+    int N = a.length;
+    // 初始化间隔h
+    int h = 1;
+    // 计算间隔h，使得h小于N/3
+    while (h < N / 3) h = 3 * h + 1;
+    // 当间隔h大于等于1时，进行希尔排序
+    while (h >= 1) {
+        // 从间隔h开始，依次比较间隔h的元素
+        for (int i = h; i < N; i++) {
+            // 保存当前元素
+            Comparable temp = a[i];
+            // 从当前元素的前一个间隔h开始，依次比较元素
+            int j;
+            for (j = i - h; j >= 0 && less(temp, a[j]); j -= h)
+                // 将当前元素前一个间隔h的元素后移
+                a[j + h] = a[j];
+            // 将当前元素插入到正确的位置
+            a[j + h] = temp;
         }
+        // 将间隔h缩小为原来的1/3
+        h /= 3;
     }
+}
 ```
 
 
