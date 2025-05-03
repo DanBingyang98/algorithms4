@@ -182,21 +182,30 @@ public static void sort(Comparable[] a) {
 希尔排序高效的原因：它权衡了子数组的规模和有序性。排序之初，各个子数组都很短，排序之后子数组都是部分有序的，这两种情况都很适合插入排序，插入排序的特点就是序列的倒置数量越少，插入排序越快。子数组部分有序的程度取决于递增序列的选择。
 
 ```java
-public static void sort(Comparable[] a){
-    int N = a.length;
-    int h = 1;
-    while(h < N/3) h = 3*h + 1; 
-    while(h >= 1) {
-        for(int i = h; i < N; i++) {
-            Comparable temp = a[i];
-            int j = i - h;
-            for(j; j >= 0 && less(temp, a[j]); j -= h)
-                a[j] = a[j-h];
-            a[j+h] = temp;
+public static void sort(Comparable[] a) {
+        int N = a.length;
+        // 初始化间隔h
+        int h = 1;
+        // 计算间隔h，使得h小于N/3
+        while (h < N / 3) h = 3 * h + 1;
+        // 当间隔h大于等于1时，进行希尔排序
+        while (h >= 1) {
+            // 从间隔h开始，依次比较间隔h的元素
+            for (int i = h; i < N; i++) {
+                // 保存当前元素
+                Comparable temp = a[i];
+                // 从当前元素的前一个间隔h开始，依次比较元素
+                int j;
+                for (j = i - h; j >= 0 && less(temp, a[j]); j -= h)
+                    // 将当前元素前一个间隔h的元素后移
+                    a[j + h] = a[j];
+                // 将当前元素插入到正确的位置
+                a[j + h] = temp;
+            }
+            // 将间隔h缩小为原来的1/3
+            h /= 3;
         }
-        h /= 3;
     }
-}
 ```
 
 
