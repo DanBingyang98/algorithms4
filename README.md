@@ -210,3 +210,73 @@ public static void sort(Comparable[] a) {
 
 
 
+### 归并排序
+
+**思想：** 要将一个数组排序，可以先（递归地）将它分成两半本别排序，然后将结果归并起来。
+
+**优点：** 保证将任意长度为N的数组排序所需时间和`NlogN`成正比。
+
+**缺点：** 所需要的额外空间和N成正比。
+
+**代码：**
+
+自顶向下的归并排序
+
+```java
+public class MergeSort {
+    private Comparable[] aux;
+    
+    public static void sort(Comparable[] a) {
+        aux = new Comparable[a.length];
+        sort(a, 0, a.length - 1);
+    }
+    
+    public static void sort(Comparable[] a, int lo, int hi) {
+        if(lo >= hi) return;
+        int mid = lo + (hi - lo) / 2;
+        sort(a, lo, mid);
+        sort(a, mid + 1, hi);
+        merge(a, lo, mid, hi);
+    }
+    
+    public static void merge(Comparable[] a, int lo, int mid, int hi) {
+        int i = lo, j = mid + 1, k;
+        for(k = lo; k <= hi; k++) {
+            aux[k] = a[k];
+        }
+        for(k = lo; k <= hi; k++) {
+            if(i > mid) a[k] =  aux[j++];
+            else if(j > hi) a[k] = aux[i++];
+            else if(less(aux[i], aux[j])) a[k] = aux[i++];
+            else a[k] = aux[j++];   
+        }
+    }
+}
+```
+
+
+
+自底向上的归并排序
+
+先归并那些微型数组，然后再成对归并得到的子数组。先两两归并、再四四归并、再八八归并、以此类推。
+
+```java
+public static void sort(Comparable[] a) {
+    int N = a.length;
+    // 创建一个与a相同长度的辅助数组
+    aux = new Comparable[N];
+    // 从1开始，每次增加2的倍数
+    for (int sz = 1; sz < N; sz = sz + sz) {
+        // 从0开始，每次增加2的倍数
+        for (int lo = 0; lo < N - sz; lo += sz + sz) {
+            // 合并两个有序数组
+            merge(a, lo, lo + sz - 1, Math.min(lo + sz + sz - 1, N - 1));
+        }
+    }
+}
+```
+
+
+
+### 快速排序
+

@@ -30,16 +30,6 @@ public class HillSort {
         }
     }
 
-    // 比较两个元素的大小
-    public static boolean less(Comparable v, Comparable w) {
-        return v.compareTo(w) < 0;
-    }
-    // 打印数组
-    public static void show(Comparable[] a) {
-        for (int i = 0; i < a.length; i++)
-            System.out.print(a[i] + " ");
-        System.out.println();
-    }
     public static void main(String[] args) {
         Integer[] a = {5, 4, 3, 2, 1, 2, 2, 4, 4, 35, 24, 324, 234, 32, 534, 5, 436, 3456, 45, 643, 56, 34543, 243};
         // 对数组a进行希尔排序
