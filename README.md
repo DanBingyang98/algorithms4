@@ -280,3 +280,63 @@ public static void sort(Comparable[] a) {
 
 ### 快速排序
 
+**思想：** 快速排序的思想是分治的。它将一个数组分成两个子数组，将两部分独立的排序。
+
+和归并排序相比： 归并排序将数组分成两个子数组分别排序，再将两个有序的子数组归并成一个数组以实现排序。
+
+快速排序：当两个子数组都有序时，整个数组就自然有序了。
+
+归并排序的递归调用在处理整个数组之前；快速排序的递归调用在处理整个数组之后。
+
+快速排序的关键在于切分。找到一个切分元素，将数组分成两个子数组，前面部分的子数组都不大于切分元素，后面部分的子数组都不小于切分元素。
+
+**特点：** 应用最广泛。实现简单。适用于各种不同的输入。一般应用中比其他排序算法都要快得多。他是原地排序。将长度为N的数组排序所需的时间和`NlogN`成正比。
+
+**代码：** 
+
+```java
+// 对数组a进行排序
+public static void sort(Comparable[] a) {
+    // 调用sort方法，对数组a进行排序
+    sort(a, 0, a.length - 1);
+}
+
+// 对数组a的子数组a[lo...hi]进行排序
+public static void sort(Comparable[] a, int lo, int hi) {
+    // 如果子数组长度小于等于1，则直接返回
+    if (lo >= hi) {
+        return;
+    }
+    // 调用partition方法，将数组a的子数组a[lo...hi]分为两部分
+    int p = partition(a, lo, hi);
+    // 对左半部分进行排序
+    sort(a, lo, p - 1);
+    // 对右半部分进行排序
+    sort(a, p + 1, hi);
+}
+
+// 将数组a的子数组a[lo...hi]分为两部分，左边小于等于v，右边大于v
+public static int partition(Comparable[] a, int lo, int hi) {
+    // 定义两个指针i和j，分别指向子数组的左边界和右边界
+    int i = lo, j = hi + 1;
+    // 定义一个基准元素v，取子数组的第一个元素
+    Comparable v = a[lo];
+    // 当i和j没有相遇时，继续循环
+    while (true) {
+        // 从左到右找到第一个大于v的元素
+        while (less(a[++i], v)) if (i >= hi) break;
+        // 从右到左找到第一个小于v的元素
+        while (less(v, a[--j])) ;
+        // 如果i和j相遇，则退出循环
+        if (i >= j) break;
+        // 交换a[i]和a[j]
+        exch(a, i, j);
+    }
+    // 将基准元素v放到正确的位置
+    exch(a, lo, j);
+    // 返回基准元素v的位置
+    return j;
+}
+```
+
+ 

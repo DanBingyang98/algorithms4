@@ -1,7 +1,5 @@
 package com.danby.algorithms4.sort;
 
-import java.util.Arrays;
-
 import static com.danby.algorithms4.utils.SortUtil.less;
 import static com.danby.algorithms4.utils.SortUtil.show;
 
