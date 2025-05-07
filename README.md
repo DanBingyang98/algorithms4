@@ -340,3 +340,274 @@ public static int partition(Comparable[] a, int lo, int hi) {
 ```
 
  
+
+## 查找
+
+### 符号表
+
+`public class ST<Key, Value>`
+
+**API**
+
+| 方法                           | 作用                                            | 默认实现                   |
+| ------------------------------ | ----------------------------------------------- | -------------------------- |
+| `ST()`                         | 创建一张符号表                                  |                            |
+| `void put(Key key, Value val)` | 将键值对存入表中（若值为空则将键key从表中删除） |                            |
+| `Value get(Key key)`           | 获取键Key对应的值（若键Key不存在则返回null）    |                            |
+| `void delete(Key key)`         | 从表中删除键key（以及其对应的值）               | `put(key, null);`          |
+| `boolean isEmpty()`            | 表是否为空                                      | `return size() == 0;`      |
+| `boolean contains(Key key)`    | 键Key在表中是否有对应的值                       | `return get(key) != null;` |
+| `int size()`                   | 表中键值对数量                                  |                            |
+| `Iterable<Key> keys()`         | 表中的所有键的集合                              |                            |
+
+
+
+### 有序符号表
+
+`public class ST<Key extends Comparable<key>, Value>`
+
+**API** 
+
+| 方法                                 | 作用                                            | 默认实现                     |
+| ------------------------------------ | ----------------------------------------------- | ---------------------------- |
+| `ST()`                               | 创建一张符号表                                  |                              |
+| `void put(Key key, Value val)`       | 将键值对存入表中（若值为空则将键key从表中删除） |                              |
+| `Value get(Key key)`                 | 获取键Key对应的值（若键Key不存在则返回null）    |                              |
+| `void delete(Key key)`               | 从表中删除键key（以及其对应的值）               | `put(key, null);`            |
+| `boolean isEmpty()`                  | 表是否为空                                      | `return size() == 0;`        |
+| `boolean contains(Key key)`          | 键Key在表中是否有对应的值                       | `return get(key) != null;`   |
+| `int size()`                         | 表中键值对数量                                  |                              |
+| `Key min()`                          | 最小的键                                        |                              |
+| `Key max()`                          | 最大的键                                        |                              |
+| `Key floor(Key key)`                 | 小于等于key的最大键                             |                              |
+| `Key ceiling(Key key)`               | 大于等于key的最小键                             |                              |
+| `int rank(Key key)`                  | 小于key的键的数量                               |                              |
+| `Key select(int k)`                  | 排名为k的键                                     |                              |
+| `void deleteMin()`                   | 删除最小的键                                    | `delete(min());`             |
+| `void deleteMax()`                   | 删除最大的键                                    | `delete(max());`             |
+| `int size(Key lo, Key hi)`           | [lo..hi] 之间键的数量                           | 见下面代码块                 |
+| `Iterable<Key> keys(Key lo, Key hi)` | [lo..hi] 之间的所有键，已排序                   |                              |
+| `Iterable<Key> keys()`               | 表中的所有键的集合                              | `return keys(min(), max());` |
+
+```java
+int size(Key lo, Key hi) {
+    // 给定区间不合法 返回0
+    if(hi.compareTo(lo) < 0)
+        return 0;
+    // 存在hi的Key
+    else if(contains(hi))
+        return rank(hi) - rank(lo) + 1;
+    // 不存在hi的Key
+    else 
+        return rank(hi) - rank(lo);
+}
+```
+
+
+
+### 顺序查找（基于无序链表）
+
+```java
+package com.danby.algorithms4.search;
+
+public class SequentialSearchST<Key, Value> implements ST<Key, Value> {
+
+    // 头节点
+    private Node first;
+
+    // 链表节点定义
+    private class Node {
+        Key key;
+        Value val;
+        Node next;
+
+        public Node(Key key, Value val, Node next) {
+            this.key = key;
+            this.val = val;
+            this.next = next;
+        }
+    }
+
+    @Override
+    public void put(Key key, Value value) {
+        // 如果value为null，则删除key对应的节点
+        if (value == null) {
+            delete(key);
+            return;
+        }
+        // 遍历链表，查找key对应的节点
+        for (Node current = first; current != null; current = current.next) {
+            // 如果找到key对应的节点，则更新节点的value
+            if (key.equals(current.key)) {
+                current.val = value;
+                return;
+            }
+            // 如果没有找到key对应的节点，则创建新节点，并将其插入链表头部
+            first = new Node(key, value, first);
+        }
+
+    }
+
+    @Override
+    public void delete(Key key) {
+        Node current = first;
+        Node previous = null;
+        while (current != null) {
+            // 命中key
+            if (key.equals(current.key)) {
+                if (previous == null) {
+                    first = current.next;
+                } else {
+                    previous.next = current.next;
+                }
+                return;
+            }
+            previous = current;
+            current = current.next;
+        }
+        //出循环说明未命中，直接自动返回
+    }
+
+    @Override
+    public Value get(Key key) {
+        for (Node current = first; current != null; current = current.next) {
+            if (key.equals(current.key))
+                return current.val;
+        }
+        return null;
+    }
+
+    @Override
+    // 重写父类的方法，返回链表的大小
+    public int size() {
+        int count = 0;
+        // 遍历链表，从第一个节点开始
+        for (Node current = first; current != null; current = current.next)
+            // 每遍历一个节点，计数器加一
+            count++;
+        // 返回链表的大小
+        return count;
+    }
+
+    @Override
+    public Iterable<Key> Keys() {
+        return null;
+    }
+}
+```
+
+
+
+### 有序数组中的二分查找
+
+
+
+```java
+package com.danby.algorithms4.search;
+
+public class BinarySearchST<Key extends Comparable<Key>, Value> implements SequenceST<Key, Value> {
+
+    private Key[] keys;
+    private Value[] values;
+    private int N;
+
+    BinarySearchST(int capacity) {
+        keys = (Key[]) new Comparable[capacity];
+        values = (Value[]) new Object[capacity];
+        N = capacity;
+    }
+
+
+    @Override
+    public Key min() {
+        return keys[0];
+    }
+
+    @Override
+    public Key max() {
+        return keys[N - 1];
+    }
+
+    @Override
+    public Key floor(Key key) {
+        return keys[rank(key) - 1];
+    }
+
+    @Override
+    public Key ceiling(Key key) {
+        return keys[rank(key) + 1];
+    }
+
+    @Override
+    public int rank(Key key) {
+        int lo = 0, hi = N - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            int cmp = key.compareTo(keys[mid]);
+            if (cmp < 0)
+                hi = mid - 1;
+            else if (cmp > 0)
+                lo = mid + 1;
+            else
+                return mid;
+        }
+        return lo;
+    }
+
+    public int rank(Key key, int lo, int hi) {
+        if (hi < lo) return lo;
+        int mid = lo + (hi - lo) / 2;
+        int cmp = key.compareTo(keys[mid]);
+        if (cmp < 0) return rank(key, lo, mid - 1);
+        else if (cmp > 0) return rank(key, mid + 1, hi);
+        else return mid;
+    }
+
+    @Override
+    public Key select(int k) {
+        return null;
+    }
+
+    @Override
+    public Iterable<Key> keys(Key lo, Key hi) {
+        return null;
+    }
+
+    @Override
+    public void put(Key key, Value value) {
+        int i = rank(key);
+        if (i < N && keys[i].compareTo(key) == 0) {
+            values[i] = value;
+            return;
+        }
+        for (int j = N; j > i; j--) {
+            keys[j] = keys[j - 1];
+            values[j] = values[j - 1];
+        }
+        keys[i] = key;
+        values[i] = value;
+        N++;
+    }
+
+    @Override
+    public Value get(Key key) {
+        if (isEmpty())
+            return null;
+        int i = rank(key);
+        if (i < N && keys[i].compareTo(key) == 0)
+            return values[i];
+        return null;
+    }
+
+    @Override
+    public int size() {
+        return N;
+    }
+
+    @Override
+    public Iterable<Key> Keys() {
+        return null;
+    }
+}
+```
+
